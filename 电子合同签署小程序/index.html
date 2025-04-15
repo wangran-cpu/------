@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background-color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .prototype-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .screen {
+            width: 375px;
+            height: 812px;
+            background-color: white;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 10px solid #111;
+        }
+
+        .screen-label {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="max-w-7xl mx-auto py-10">
+        <h1 class="text-3xl font-bold text-center mb-10">电子合同签署小程序 - 界面原型</h1>
+
+        <div class="prototype-container">
+            <!-- 登录注册界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="login.html" title="登录注册"></iframe>
+                </div>
+                <div class="screen-label">登录注册</div>
+            </div>
+
+            <!-- 首页界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="home.html" title="首页"></iframe>
+                </div>
+                <div class="screen-label">首页</div>
+            </div>
+
+            <!-- 个人中心界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="profile.html" title="个人中心"></iframe>
+                </div>
+                <div class="screen-label">个人中心</div>
+            </div>
+
+            <!-- 签名/印章设置界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="signature-settings.html" title="签名/印章设置"></iframe>
+                </div>
+                <div class="screen-label">签名/印章设置</div>
+            </div>
+
+            <!-- 上传合同界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="contract-upload.html" title="上传合同"></iframe>
+                </div>
+                <div class="screen-label">上传合同</div>
+            </div>
+
+            <!-- 合同预览/签署界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="contract-sign.html" title="合同预览/签署"></iframe>
+                </div>
+                <div class="screen-label">合同预览/签署</div>
+            </div>
+
+            <!-- 添加签署方界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="add-signers.html" title="添加签署方"></iframe>
+                </div>
+                <div class="screen-label">添加签署方</div>
+            </div>
+
+            <!-- 合同详情界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="contract-details.html" title="合同详情"></iframe>
+                </div>
+                <div class="screen-label">合同详情</div>
+            </div>
+
+            <!-- 实名认证界面 -->
+            <div class="screen-wrapper">
+                <div class="screen">
+                    <iframe src="identity-verification.html" title="实名认证"></iframe>
+                </div>
+                <div class="screen-label">实名认证</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

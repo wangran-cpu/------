@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实名认证 - 电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .tab-container {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            color: var(--text-secondary);
+            position: relative;
+            font-size: 15px;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .upload-area {
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            background-color: #f8f8f8;
+        }
+
+        .upload-icon {
+            font-size: 24px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .verification-steps {
+            display: flex;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .step-line {
+            position: absolute;
+            top: 15px;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background-color: var(--border-color);
+            z-index: 0;
+        }
+
+        .verification-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background-color: white;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .step-circle.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .step-circle.completed {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .step-label.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .id-card-preview {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .id-card-side {
+            flex: 1;
+            height: 100px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f8f8;
+            position: relative;
+        }
+
+        .id-card-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .id-card-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 3px 0;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .face-verification {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .face-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            background-color: #f8f8f8;
+            border: 1px dashed var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .face-icon {
+            font-size: 36px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .tips-section {
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tips-title {
+            display: flex;
+            align-items: center;
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .tips-content {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .company-info-preview {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #f8f8f8;
+        }
+
+        .preview-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .preview-label {
+            width: 80px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .preview-value {
+            flex: 1;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <div class="status-time">9:41</div>
+        </div>
+        <div class="status-icons">
+            <i class="fa-solid fa-signal"></i>
+            <i class="fa-solid fa-wifi"></i>
+            <i class="fa-solid fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-header">
+        <div class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">实名认证</div>
+        <div></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <!-- 认证类型标签页 -->
+        <div class="tab-container">
+            <div class="tab active" id="personal-tab">个人认证</div>
+            <div class="tab" id="company-tab">企业认证</div>
+        </div>
+
+        <!-- 认证步骤指示器 -->
+        <div class="verification-steps">
+            <div class="step-line"></div>
+            <div class="verification-step">
+                <div class="step-circle active">1</div>
+                <div class="step-label active">资料填写</div>
+            </div>
+            <div class="verification-step">
+                <div class="step-circle">2</div>
+                <div class="step-label">身份验证</div>
+            </div>
+            <div class="verification-step">
+                <div class="step-circle">3</div>
+                <div class="step-label">认证完成</div>
+            </div>
+        </div>
+
+        <!-- 个人认证内容 -->
+        <div class="tab-content active" id="personal-content">
+            <!-- 基本信息 -->
+            <div class="form-section">
+                <div class="section-title">填写基本信息</div>
+
+                <div class="form-group">
+                    <label class="form-label">真实姓名</label>
+                    <input type="text" class="form-control" placeholder="请输入您的真实姓名">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">身份证号码</label>
+                    <input type="text" class="form-control" placeholder="请输入18位身份证号码">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">手机号码</label>
+                    <div class="flex">
+                        <input type="tel" class="form-control" placeholder="请输入手机号码" style="flex: 2;">
+                        <button class="btn ml-2" style="flex: 1;">获取验证码</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">验证码</label>
+                    <input type="text" class="form-control" placeholder="请输入短信验证码">
+                </div>
+            </div>
+
+            <!-- 身份证上传 -->
+            <div class="form-section">
+                <div class="section-title">上传身份证照片</div>
+
+                <div class="id-card-preview">
+                    <div class="id-card-side">
+                        <i class="fas fa-id-card text-gray-400"></i>
+                        <div class="id-card-label">身份证正面</div>
+                    </div>
+                    <div class="id-card-side">
+                        <i class="fas fa-id-card text-gray-400"></i>
+                        <div class="id-card-label">身份证反面</div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-gray-500 mb-3">请上传清晰的身份证正反面照片，确保信息完整可见</div>
+
+                <button class="btn btn-block">
+                    <i class="fas fa-camera mr-1"></i> 拍照上传
+                </button>
+            </div>
+
+            <!-- 操作按钮 -->
+            <button class="btn btn-block mb-10">下一步：人脸识别</button>
+        </div>
+
+        <!-- 企业认证内容 -->
+        <div class="tab-content" id="company-content">
+            <!-- 企业基本信息 -->
+            <div class="form-section">
+                <div class="section-title">填写企业信息</div>
+
+                <div class="form-group">
+                    <label class="form-label">企业名称</label>
+                    <input type="text" class="form-control" placeholder="请输入企业全称">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">统一社会信用代码</label>
+                    <input type="text" class="form-control" placeholder="请输入18位统一社会信用代码">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">企业类型</label>
+                    <select class="form-control">
+                        <option value="">请选择企业类型</option>
+                        <option value="1">有限责任公司</option>
+                        <option value="2">股份有限公司</option>
+                        <option value="3">个体工商户</option>
+                        <option value="4">合伙企业</option>
+                        <option value="5">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">法定代表人</label>
+                    <input type="text" class="form-control" placeholder="请输入法定代表人姓名">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">联系电话</label>
+                    <input type="tel" class="form-control" placeholder="请输入联系电话">
+                </div>
+            </div>
+
+            <!-- 证件上传 -->
+            <div class="form-section">
+                <div class="section-title">上传企业资质</div>
+
+                <div class="upload-area mb-4">
+                    <div class="upload-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="upload-text">上传营业执照</div>
+                    <div class="upload-hint">支持JPG、PNG、PDF格式，大小不超过10MB</div>
+                </div>
+
+                <div class="upload-area">
+                    <div class="upload-icon">
+                        <i class="fas fa-stamp"></i>
+                    </div>
+                    <div class="upload-text">上传组织机构代码证/税务登记证（选填）</div>
+                    <div class="upload-hint">支持JPG、PNG、PDF格式，大小不超过10MB</div>
+                </div>
+            </div>
+
+            <!-- 法人身份认证 -->
+            <div class="form-section">
+                <div class="section-title">法人身份认证</div>
+
+                <div class="form-group">
+                    <label class="form-label">法人身份证号</label>
+                    <input type="text" class="form-control" placeholder="请输入法人身份证号码">
+                </div>
+
+                <div class="id-card-preview">
+                    <div class="id-card-side">
+                        <i class="fas fa-id-card text-gray-400"></i>
+                        <div class="id-card-label">法人身份证正面</div>
+                    </div>
+                    <div class="id-card-side">
+                        <i class="fas fa-id-card text-gray-400"></i>
+                        <div class="id-card-label">法人身份证反面</div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-gray-500 mb-3">请上传清晰的法人身份证正反面照片，确保信息完整可见</div>
+
+                <button class="btn btn-block">
+                    <i class="fas fa-camera mr-1"></i> 拍照上传
+                </button>
+            </div>
+
+            <!-- 操作按钮 -->
+            <button class="btn btn-block mb-10">提交审核</button>
+        </div>
+
+        <!-- 人脸识别界面（默认隐藏） -->
+        <div id="face-verification" style="display: none;">
+            <div class="form-section">
+                <div class="section-title text-center">人脸识别</div>
+
+                <div class="face-verification">
+                    <div class="face-circle">
+                        <i class="fas fa-user face-icon"></i>
+                        <div class="text-sm text-gray-500">点击开始</div>
+                    </div>
+                    <div class="text-sm">请将脸部置于框内，保持光线充足</div>
+                </div>
+
+                <div class="tips-section">
+                    <div class="tips-title">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <span>温馨提示</span>
+                    </div>
+                    <div class="tips-content">
+                        <p>1. 请确保光线充足，避免逆光</p>
+                        <p>2. 请摘掉眼镜、帽子等面部遮挡物</p>
+                        <p>3. 拍摄时请保持自然表情</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-block" id="start-verification">开始识别</button>
+            </div>
+        </div>
+
+        <!-- 认证成功界面（默认隐藏） -->
+        <div id="verification-success" style="display: none;">
+            <div class="form-section text-center py-10">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-white text-2xl"></i>
+                </div>
+
+                <div class="text-lg font-medium mb-2">认证成功</div>
+                <div class="text-sm text-gray-500 mb-6">您的身份信息已验证通过</div>
+
+                <div class="company-info-preview">
+                    <div class="preview-row">
+                        <div class="preview-label">姓名：</div>
+                        <div class="preview-value">张三</div>
+                    </div>
+                    <div class="preview-row">
+                        <div class="preview-label">身份证号：</div>
+                        <div class="preview-value">310************123X</div>
+                    </div>
+                    <div class="preview-row">
+                        <div class="preview-label">认证时间：</div>
+                        <div class="preview-value">2023-04-15 15:30:22</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-block" id="verification-complete">完成</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换标签页功能
+        document.getElementById('personal-tab').addEventListener('click', function () {
+            document.getElementById('personal-tab').classList.add('active');
+            document.getElementById('company-tab').classList.remove('active');
+            document.getElementById('personal-content').classList.add('active');
+            document.getElementById('company-content').classList.remove('active');
+        });
+
+        document.getElementById('company-tab').addEventListener('click', function () {
+            document.getElementById('company-tab').classList.add('active');
+            document.getElementById('personal-tab').classList.remove('active');
+            document.getElementById('company-content').classList.add('active');
+            document.getElementById('personal-content').classList.remove('active');
+        });
+
+        // 个人认证下一步按钮
+        document.querySelector('#personal-content .btn-block:last-child').addEventListener('click', function () {
+            // 隐藏表单
+            document.getElementById('personal-content').style.display = 'none';
+
+            // 显示人脸识别界面
+            document.getElementById('face-verification').style.display = 'block';
+
+            // 更新进度
+            document.querySelectorAll('.step-circle')[0].classList.add('completed');
+            document.querySelectorAll('.step-circle')[0].innerHTML = '<i class="fas fa-check"></i>';
+            document.querySelectorAll('.step-circle')[1].classList.add('active');
+            document.querySelectorAll('.step-label')[1].classList.add('active');
+        });
+
+        // 开始人脸识别按钮
+        document.getElementById('start-verification').addEventListener('click', function () {
+            // 模拟人脸识别过程
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> 识别中...';
+            this.disabled = true;
+
+            // 假设3秒后识别成功
+            setTimeout(() => {
+                // 隐藏人脸识别界面
+                document.getElementById('face-verification').style.display = 'none';
+
+                // 显示认证成功界面
+                document.getElementById('verification-success').style.display = 'block';
+
+                // 更新进度
+                document.querySelectorAll('.step-circle')[1].classList.remove('active');
+                document.querySelectorAll('.step-circle')[1].classList.add('completed');
+                document.querySelectorAll('.step-circle')[1].innerHTML = '<i class="fas fa-check"></i>';
+                document.querySelectorAll('.step-circle')[2].classList.add('active');
+                document.querySelectorAll('.step-label')[2].classList.add('active');
+            }, 3000);
+        });
+
+        // 认证完成按钮
+        document.getElementById('verification-complete').addEventListener('click', function () {
+            // 在实际应用中，这里会返回到个人中心页面
+            alert('认证完成！在实际应用中会返回到个人中心页面');
+        });
+    </script>
+</body>
+
+</html>

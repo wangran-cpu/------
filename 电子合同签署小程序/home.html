@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .banner {
+            border-radius: 10px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            margin-bottom: 20px;
+            padding: 15px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 120px;
+            height: 120px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-more {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: normal;
+        }
+
+        .contract-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .status {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .status-waiting {
+            background-color: #fff5e6;
+            color: #ff9f0a;
+        }
+
+        .status-signed {
+            background-color: #ecf8f3;
+            color: #34c759;
+        }
+
+        .status-canceled {
+            background-color: #f2f2f7;
+            color: #8e8e93;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <div class="status-time">9:41</div>
+        </div>
+        <div class="status-icons">
+            <i class="fa-solid fa-signal"></i>
+            <i class="fa-solid fa-wifi"></i>
+            <i class="fa-solid fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-header">
+        <div class="nav-title">电子合同签署</div>
+        <div>
+            <i class="fas fa-bell text-gray-400"></i>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <!-- 横幅 -->
+        <div class="banner">
+            <h3 class="text-lg font-bold mb-2">快速开始签署合同</h3>
+            <p class="text-sm opacity-80 mb-3">安全便捷，随时随地处理您的合同</p>
+            <button class="btn bg-white text-primary">立即体验</button>
+        </div>
+
+        <!-- 功能快捷入口 -->
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <span class="text-sm">发起签署</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <span class="text-sm">合同管理</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <span class="text-sm">身份认证</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-stamp"></i>
+                </div>
+                <span class="text-sm">印章管理</span>
+            </div>
+        </div>
+
+        <!-- 待我签署 -->
+        <div class="section-title">
+            待我签署
+            <span class="section-more">更多 <i class="fas fa-chevron-right text-xs"></i></span>
+        </div>
+
+        <div class="list">
+            <div class="list-item">
+                <div>
+                    <div class="font-medium">销售合同协议书</div>
+                    <div class="contract-time">发起方：张三 · 2023-04-15</div>
+                </div>
+                <div class="status status-waiting">待签署</div>
+            </div>
+            <div class="list-item">
+                <div>
+                    <div class="font-medium">产品服务协议</div>
+                    <div class="contract-time">发起方：科技有限公司 · 2023-04-14</div>
+                </div>
+                <div class="status status-waiting">待签署</div>
+            </div>
+        </div>
+
+        <!-- 我发起的 -->
+        <div class="section-title mt-5">
+            我发起的
+            <span class="section-more">更多 <i class="fas fa-chevron-right text-xs"></i></span>
+        </div>
+
+        <div class="list">
+            <div class="list-item">
+                <div>
+                    <div class="font-medium">劳动合同</div>
+                    <div class="contract-time">签署方：李四 · 2023-04-13</div>
+                </div>
+                <div class="status status-signed">已完成</div>
+            </div>
+            <div class="list-item">
+                <div>
+                    <div class="font-medium">租房协议书</div>
+                    <div class="contract-time">签署方：王五 · 2023-04-10</div>
+                </div>
+                <div class="status status-canceled">已取消</div>
+            </div>
+            <div class="list-item">
+                <div>
+                    <div class="font-medium">咨询服务合同</div>
+                    <div class="contract-time">签署方：赵六 · 2023-04-05</div>
+                </div>
+                <div class="status status-signed">已完成</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部选项卡 -->
+    <div class="tab-bar">
+        <a href="home.html" class="tab-item active">
+            <i class="fas fa-home tab-icon"></i>
+            <span>首页</span>
+        </a>
+        <a href="contract-upload.html" class="tab-item">
+            <i class="fas fa-plus tab-icon"></i>
+            <span>新建</span>
+        </a>
+        <a href="profile.html" class="tab-item">
+            <i class="fas fa-user tab-icon"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+
+</html>

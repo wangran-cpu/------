@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合同签署 - 电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .contract-toolbar {
+            background-color: white;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 86px;
+            z-index: 90;
+        }
+
+        .page-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .tool-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .tool-icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .full-contract-preview {
+            background-color: #f5f5f5;
+            min-height: 450px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contract-page {
+            width: 100%;
+            height: 500px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-size: 12px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .signature-placeholder {
+            position: absolute;
+            border: 2px dashed var(--primary-color);
+            background-color: rgba(22, 119, 255, 0.05);
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .signature-toolbar {
+            position: fixed;
+            bottom: 50px;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            z-index: 100;
+        }
+
+        .signature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .signature-type-tabs {
+            display: flex;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 15px;
+        }
+
+        .signature-tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .signature-tab.active {
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .signature-options {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .signature-option {
+            flex-shrink: 0;
+            width: 100px;
+            height: 60px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .signature-option.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+        }
+
+        .signature-preview {
+            position: absolute;
+            cursor: move;
+            z-index: 10;
+        }
+
+        .signature-image {
+            max-width: 150px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .signature-controls {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .signature-control {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            width: 90%;
+            max-width: 320px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .modal-close {
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 15px;
+        }
+
+        .modal-footer {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <div class="status-time">9:41</div>
+        </div>
+        <div class="status-icons">
+            <i class="fa-solid fa-signal"></i>
+            <i class="fa-solid fa-wifi"></i>
+            <i class="fa-solid fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-header">
+        <div class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">合同签署</div>
+        <div></div>
+    </div>
+
+    <!-- 合同工具栏 -->
+    <div class="contract-toolbar">
+        <div class="page-count">第 1/6 页</div>
+        <div class="toolbar-actions">
+            <div class="tool-btn">
+                <i class="fas fa-search-plus tool-icon"></i>
+                <span>放大</span>
+            </div>
+            <div class="tool-btn">
+                <i class="fas fa-search-minus tool-icon"></i>
+                <span>缩小</span>
+            </div>
+            <div class="tool-btn text-primary">
+                <i class="fas fa-signature tool-icon"></i>
+                <span>签名</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 合同预览区域 -->
+    <div class="full-contract-preview">
+        <div class="contract-page">
+            <!-- 合同内容示例 -->
+            <h1 style="font-size: 18px; text-align: center; margin-bottom: 20px;">销售服务协议</h1>
+
+            <p style="margin-bottom: 10px;">甲方：_________________</p>
+            <p style="margin-bottom: 10px;">乙方：_________________</p>
+
+            <p style="margin-bottom: 10px;">签订日期：_________________</p>
+
+            <h2 style="font-size: 14px; font-weight: bold; margin: 15px 0 10px;">第一条 服务内容</h2>
+            <p style="text-indent: 2em; margin-bottom: 10px;">1.1 根据本协议的条款和条件，乙方同意向甲方提供以下服务：[服务描述]。</p>
+            <p style="text-indent: 2em; margin-bottom: 10px;">1.2 服务期限自______年___月___日起至______年___月___日止。</p>
+
+            <h2 style="font-size: 14px; font-weight: bold; margin: 15px 0 10px;">第二条 服务费用及支付方式</h2>
+            <p style="text-indent: 2em; margin-bottom: 10px;">2.1 甲方应向乙方支付服务费用共计人民币________元（¥________）。</p>
+            <p style="text-indent: 2em; margin-bottom: 10px;">2.2 支付方式：________</p>
+
+            <h2 style="font-size: 14px; font-weight: bold; margin: 15px 0 10px;">第三条 双方权利与义务</h2>
+            <p style="text-indent: 2em; margin-bottom: 10px;">3.1 甲方权利与义务：________</p>
+            <p style="text-indent: 2em; margin-bottom: 10px;">3.2 乙方权利与义务：________</p>
+
+            <!-- 签名区域1 - 位于合同底部 -->
+            <div class="signature-placeholder" style="width: 150px; height: 60px; bottom: 60px; left: 30px;">
+                <i class="fas fa-pen mr-1"></i> 点击此处签署（甲方）
+            </div>
+
+            <!-- 签名区域2 - 位于合同底部 -->
+            <div class="signature-placeholder" style="width: 150px; height: 60px; bottom: 60px; right: 30px;">
+                <i class="fas fa-pen mr-1"></i> 点击此处签署（乙方）
+            </div>
+
+            <!-- 一个已经签署的签名示例 -->
+            <div class="signature-preview" style="bottom: 150px; left: 50px;">
+                <img src="https://via.placeholder.com/120x60/f8f8f8/666666?text=张三签名" alt="签名" class="signature-image">
+                <div class="signature-controls">
+                    <div class="signature-control">
+                        <i class="fas fa-arrows-alt"></i>
+                    </div>
+                    <div class="signature-control">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 可以添加更多页 -->
+        <div class="contract-page" style="display: none;">
+            <!-- 第二页内容 -->
+        </div>
+    </div>
+
+    <!-- 签名工具栏 -->
+    <div class="signature-toolbar">
+        <div class="signature-header">
+            <h3 class="font-medium">选择签名</h3>
+            <div class="text-primary">
+                <i class="fas fa-plus"></i> 新建
+            </div>
+        </div>
+
+        <div class="signature-type-tabs">
+            <div class="signature-tab active">签名</div>
+            <div class="signature-tab">印章</div>
+        </div>
+
+        <div class="signature-options">
+            <div class="signature-option active">
+                <img src="https://via.placeholder.com/80x40/f8f8f8/666666?text=签名1" alt="签名1">
+            </div>
+            <div class="signature-option">
+                <img src="https://via.placeholder.com/80x40/f8f8f8/666666?text=签名2" alt="签名2">
+            </div>
+            <div class="signature-option">
+                <img src="https://via.placeholder.com/80x40/f8f8f8/666666?text=签名3" alt="签名3">
+            </div>
+            <div class="signature-option">
+                <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white text-xs">公司印章
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-block">应用并保存</button>
+        </div>
+    </div>
+
+    <!-- 签署完成后的确认弹窗 (默认隐藏) -->
+    <div class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">签署确认</div>
+                <div class="modal-close">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="text-center mb-3">您已完成合同签署</p>
+                <p class="text-sm text-gray-500 text-center">签署后的合同将被保存并生成电子证书</p>
+
+                <div class="flex justify-center mt-4">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check text-white text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline">继续编辑</button>
+                <button class="btn">确认完成</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 签名选项切换
+        const signatureOptions = document.querySelectorAll('.signature-option');
+        signatureOptions.forEach(option => {
+            option.addEventListener('click', function () {
+                signatureOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 签名/印章标签切换
+        const signatureTabs = document.querySelectorAll('.signature-tab');
+        signatureTabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                signatureTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 显示签名工具栏
+        const signaturePlaceholders = document.querySelectorAll('.signature-placeholder');
+        const signatureToolbar = document.querySelector('.signature-toolbar');
+
+        signaturePlaceholders.forEach(placeholder => {
+            placeholder.addEventListener('click', function () {
+                signatureToolbar.style.display = 'block';
+            });
+        });
+
+        // 签名应用按钮 - 模拟签名流程
+        document.querySelector('.signature-toolbar .btn').addEventListener('click', function () {
+            signatureToolbar.style.display = 'none';
+
+            // 模拟签名完成后显示确认弹窗
+            setTimeout(() => {
+                document.querySelector('.modal-overlay').style.display = 'flex';
+            }, 500);
+        });
+
+        // 关闭确认弹窗
+        document.querySelector('.modal-close').addEventListener('click', function () {
+            document.querySelector('.modal-overlay').style.display = 'none';
+        });
+
+        // 确认完成按钮
+        document.querySelector('.modal-footer .btn:last-child').addEventListener('click', function () {
+            document.querySelector('.modal-overlay').style.display = 'none';
+
+            // 在实际应用中这里会跳转到合同详情或完成页面
+            alert('签署完成！在实际应用中会跳转到合同详情页');
+        });
+
+        // 继续编辑按钮
+        document.querySelector('.modal-footer .btn:first-child').addEventListener('click', function () {
+            document.querySelector('.modal-overlay').style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>

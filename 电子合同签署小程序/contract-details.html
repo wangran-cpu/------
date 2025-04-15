@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合同详情 - 电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .contract-header {
+            background-color: white;
+            padding: 20px 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+        }
+
+        .contract-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .contract-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .status-completed {
+            background-color: #ecf8f3;
+            color: #34c759;
+        }
+
+        .status-pending {
+            background-color: #fff5e6;
+            color: #ff9f0a;
+        }
+
+        .status-expired {
+            background-color: #f2f2f7;
+            color: #8e8e93;
+        }
+
+        .contract-meta {
+            display: flex;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .meta-item {
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .meta-icon {
+            margin-right: 5px;
+        }
+
+        .tab-container {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            color: var(--text-secondary);
+            position: relative;
+            font-size: 14px;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 8px;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -20px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            z-index: 1;
+        }
+
+        .timeline-dot.active {
+            background-color: var(--primary-color);
+        }
+
+        .timeline-content {
+            font-size: 14px;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            width: 100px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            flex: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-icon {
+            margin-right: 5px;
+        }
+
+        .signer-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .signer-item:last-child {
+            border-bottom: none;
+        }
+
+        .signer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .signer-info {
+            flex: 1;
+        }
+
+        .signer-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .signer-role {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .signer-status {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .status-signed {
+            background-color: #ecf8f3;
+            color: #34c759;
+        }
+
+        .status-unsigned {
+            background-color: #f2f2f7;
+            color: #8e8e93;
+        }
+
+        .certificate-card {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .certificate-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .certificate-info {
+            flex: 1;
+        }
+
+        .certificate-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .certificate-meta {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <div class="status-time">9:41</div>
+        </div>
+        <div class="status-icons">
+            <i class="fa-solid fa-signal"></i>
+            <i class="fa-solid fa-wifi"></i>
+            <i class="fa-solid fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-header">
+        <div class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">合同详情</div>
+        <div>
+            <i class="fas fa-ellipsis-h text-gray-500"></i>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <!-- 合同头部信息 -->
+        <div class="contract-header">
+            <div class="contract-title">销售服务协议</div>
+            <div class="contract-status status-completed">已完成</div>
+            <div class="contract-meta">
+                <div class="meta-item">
+                    <i class="far fa-calendar meta-icon"></i>
+                    <span>2023-04-15</span>
+                </div>
+                <div class="meta-item">
+                    <i class="far fa-file-alt meta-icon"></i>
+                    <span>6页</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-users meta-icon"></i>
+                    <span>3人签署</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 标签页 -->
+        <div class="tab-container">
+            <div class="tab active" id="details-tab">详情</div>
+            <div class="tab" id="history-tab">签署记录</div>
+            <div class="tab" id="certificate-tab">证书</div>
+        </div>
+
+        <!-- 详情标签内容 -->
+        <div class="tab-content active" id="details-content">
+            <!-- 合同预览 -->
+            <div class="section-card">
+                <div class="section-title">
+                    合同预览
+                    <a href="#" class="text-primary text-sm">查看全文</a>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-2 mb-3">
+                    <img src="https://via.placeholder.com/300x400/f8f8f8/666666?text=合同预览" alt="合同预览" class="w-full">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-outline flex-1">
+                        <i class="fas fa-download btn-icon"></i>下载
+                    </button>
+                    <button class="btn btn-outline flex-1">
+                        <i class="fas fa-share-alt btn-icon"></i>分享
+                    </button>
+                </div>
+            </div>
+
+            <!-- 合同信息 -->
+            <div class="section-card">
+                <div class="section-title">
+                    合同信息
+                </div>
+                <div class="info-row">
+                    <div class="info-label">合同编号</div>
+                    <div class="info-value">SC2023041500123</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">合同类型</div>
+                    <div class="info-value">销售服务</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">创建时间</div>
+                    <div class="info-value">2023-04-15 14:30:25</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">生效日期</div>
+                    <div class="info-value">2023-04-16</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">截止日期</div>
+                    <div class="info-value">2024-04-15</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">合同金额</div>
+                    <div class="info-value">¥50,000.00</div>
+                </div>
+            </div>
+
+            <!-- 签署方信息 -->
+            <div class="section-card">
+                <div class="section-title">
+                    签署方信息
+                </div>
+                <div class="signer-item">
+                    <div class="signer-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="signer-info">
+                        <div class="signer-name">张三（本人）</div>
+                        <div class="signer-role">创建者/甲方</div>
+                    </div>
+                    <div class="signer-status status-signed">已签署</div>
+                </div>
+                <div class="signer-item">
+                    <div class="signer-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="signer-info">
+                        <div class="signer-name">李四</div>
+                        <div class="signer-role">销售经理/乙方</div>
+                    </div>
+                    <div class="signer-status status-signed">已签署</div>
+                </div>
+                <div class="signer-item">
+                    <div class="signer-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="signer-info">
+                        <div class="signer-name">王五</div>
+                        <div class="signer-role">法务/见证人</div>
+                    </div>
+                    <div class="signer-status status-signed">已签署</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录标签内容 -->
+        <div class="tab-content" id="history-content">
+            <div class="section-card">
+                <div class="section-title">
+                    签署流程记录
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot active"></div>
+                        <div class="timeline-content">
+                            <div>王五完成合同签署</div>
+                            <div class="timeline-time">2023-04-16 16:45:12</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot active"></div>
+                        <div class="timeline-content">
+                            <div>李四完成合同签署</div>
+                            <div class="timeline-time">2023-04-16 10:30:05</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot active"></div>
+                        <div class="timeline-content">
+                            <div>系统提醒李四签署合同</div>
+                            <div class="timeline-time">2023-04-16 09:00:00</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot active"></div>
+                        <div class="timeline-content">
+                            <div>张三完成合同签署</div>
+                            <div class="timeline-time">2023-04-15 15:20:33</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot active"></div>
+                        <div class="timeline-content">
+                            <div>张三创建合同并发起签署流程</div>
+                            <div class="timeline-time">2023-04-15 14:30:25</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 证书标签内容 -->
+        <div class="tab-content" id="certificate-content">
+            <div class="section-card">
+                <div class="section-title">
+                    电子签名证书
+                </div>
+                <p class="text-sm text-gray-500 mb-3">
+                    本合同已完成签署，系统已自动生成电子签名证书，证明合同的有效性和真实性。
+                </p>
+
+                <div class="certificate-card">
+                    <div class="certificate-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="certificate-title">电子签名证书</div>
+                        <div class="certificate-meta">生成于 2023-04-16 16:45:12</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="text-sm font-medium mb-2">证书信息</div>
+                    <div class="info-row">
+                        <div class="info-label">证书编号</div>
+                        <div class="info-value">CERT202304160001</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">签署时间</div>
+                        <div class="info-value">2023-04-16 16:45:12</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">签署IP</div>
+                        <div class="info-value">192.168.1.100</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">设备信息</div>
+                        <div class="info-value">iPhone 13 Pro / iOS 15.4</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">签名算法</div>
+                        <div class="info-value">RSA-SHA256</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-gray-100 rounded-lg text-xs text-gray-500 break-all">
+                    <div class="font-medium mb-1">签名数据摘要：</div>
+                    8f9e8d7c6b5a4c3d2e1f0a9b8c7d6e5f4g3h2i1j0k9l8m7n6o5p4q3r2s1t0u9v8w7x6y5z4a3b2c1d0e9f8g7h6
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换标签页功能
+        document.getElementById('details-tab').addEventListener('click', function () {
+            document.getElementById('details-tab').classList.add('active');
+            document.getElementById('history-tab').classList.remove('active');
+            document.getElementById('certificate-tab').classList.remove('active');
+            document.getElementById('details-content').classList.add('active');
+            document.getElementById('history-content').classList.remove('active');
+            document.getElementById('certificate-content').classList.remove('active');
+        });
+
+        document.getElementById('history-tab').addEventListener('click', function () {
+            document.getElementById('history-tab').classList.add('active');
+            document.getElementById('details-tab').classList.remove('active');
+            document.getElementById('certificate-tab').classList.remove('active');
+            document.getElementById('history-content').classList.add('active');
+            document.getElementById('details-content').classList.remove('active');
+            document.getElementById('certificate-content').classList.remove('active');
+        });
+
+        document.getElementById('certificate-tab').addEventListener('click', function () {
+            document.getElementById('certificate-tab').classList.add('active');
+            document.getElementById('details-tab').classList.remove('active');
+            document.getElementById('history-tab').classList.remove('active');
+            document.getElementById('certificate-content').classList.add('active');
+            document.getElementById('details-content').classList.remove('active');
+            document.getElementById('history-content').classList.remove('active');
+        });
+    </script>
+</body>
+
+</html>

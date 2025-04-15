@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 25px 20px;
+            color: white;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .phone-number {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .stats-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            margin-top: -20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .menu-section {
+            margin-top: 20px;
+        }
+
+        .menu-heading {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            padding-left: 15px;
+        }
+
+        .menu-list {
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .menu-arrow {
+            color: var(--text-light);
+        }
+
+        .certification-status {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .status-verified {
+            background-color: #ecf8f3;
+            color: #34c759;
+        }
+
+        .status-pending {
+            background-color: #fff5e6;
+            color: #ff9f0a;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <div class="status-time">9:41</div>
+        </div>
+        <div class="status-icons">
+            <i class="fa-solid fa-signal"></i>
+            <i class="fa-solid fa-wifi"></i>
+            <i class="fa-solid fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 个人中心头部 -->
+    <div class="profile-header">
+        <div class="profile-info">
+            <div class="user-avatar">
+                <i class="fas fa-user text-2xl text-gray-400"></i>
+            </div>
+            <div class="ml-4">
+                <div>
+                    <span class="user-name">张三</span>
+                    <span class="verified-badge">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        已认证
+                    </span>
+                </div>
+                <div class="phone-number">138****5678</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 合同统计 -->
+    <div class="content" style="margin-top: -20px; padding-top: 0;">
+        <div class="stats-card">
+            <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">我发起的</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">8</div>
+                <div class="stat-label">待我签署</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">23</div>
+                <div class="stat-label">已完成</div>
+            </div>
+        </div>
+
+        <!-- 认证与安全 -->
+        <div class="menu-section">
+            <div class="menu-heading">认证与安全</div>
+            <div class="menu-list">
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div>实名认证</div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="certification-status status-verified">已认证</div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>企业认证</div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="certification-status status-pending">未认证</div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div>账号安全</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 签名与印章 -->
+        <div class="menu-section">
+            <div class="menu-heading">签名与印章</div>
+            <div class="menu-list">
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-signature"></i>
+                        </div>
+                        <div>个人签名</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-stamp"></i>
+                        </div>
+                        <div>企业印章</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统设置 -->
+        <div class="menu-section">
+            <div class="menu-heading">系统设置</div>
+            <div class="menu-list">
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div>消息通知</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>隐私设置</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div>帮助中心</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div>关于我们</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chevron-right menu-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 mb-8">
+            <button class="btn btn-outline btn-block">退出登录</button>
+        </div>
+    </div>
+
+    <!-- 底部选项卡 -->
+    <div class="tab-bar">
+        <a href="home.html" class="tab-item">
+            <i class="fas fa-home tab-icon"></i>
+            <span>首页</span>
+        </a>
+        <a href="contract-upload.html" class="tab-item">
+            <i class="fas fa-plus tab-icon"></i>
+            <span>新建</span>
+        </a>
+        <a href="profile.html" class="tab-item active">
+            <i class="fas fa-user tab-icon"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+
+</html>

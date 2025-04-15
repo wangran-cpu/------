@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传合同 - 电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #f8f8f8;
+        }
+
+        .upload-icon {
+            font-size: 36px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .upload-formats {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 10px;
+        }
+
+        .template-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .template-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .template-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .template-desc {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .step-title {
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .doc-preview {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .doc-type-icon {
+            width: 40px;
+            height: 50px;
+            background-color: #e8f4fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            border-radius: 5px;
+            color: var(--primary-color);
+            position: relative;
+        }
+
+        .doc-type-icon::after {
+            content: 'PDF';
+            position: absolute;
+            bottom: 5px;
+            font-size: 8px;
+            font-weight: bold;
+        }
+
+        .doc-info {
+            flex: 1;
+        }
+
+        .doc-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .doc-size {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <div class="status-time">9:41</div>
+        </div>
+        <div class="status-icons">
+            <i class="fa-solid fa-signal"></i>
+            <i class="fa-solid fa-wifi"></i>
+            <i class="fa-solid fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-header">
+        <div class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">上传合同</div>
+        <div></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <div class="step-title">
+            <div class="step-number">1</div>
+            <div>选择合同来源</div>
+        </div>
+
+        <!-- 上传区域 -->
+        <div class="upload-area">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="upload-text">点击上传或拖拽文件到此处</div>
+            <button class="btn">选择文件</button>
+            <div class="upload-formats">支持 PDF、Word、图片等格式</div>
+        </div>
+
+        <!-- 或使用模板 -->
+        <div class="text-center text-gray-400 my-4">或者</div>
+
+        <div class="mb-4">选择合同模板</div>
+
+        <div class="template-item">
+            <div class="template-icon">
+                <i class="fas fa-file-contract"></i>
+            </div>
+            <div class="flex-1">
+                <div class="template-name">劳动合同</div>
+                <div class="template-desc">标准劳动合同模板，适用于企业员工</div>
+            </div>
+            <div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+        </div>
+
+        <div class="template-item">
+            <div class="template-icon">
+                <i class="fas fa-file-contract"></i>
+            </div>
+            <div class="flex-1">
+                <div class="template-name">租赁合同</div>
+                <div class="template-desc">房屋租赁协议，适用于个人出租</div>
+            </div>
+            <div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+        </div>
+
+        <div class="template-item">
+            <div class="template-icon">
+                <i class="fas fa-file-contract"></i>
+            </div>
+            <div class="flex-1">
+                <div class="template-name">销售合同</div>
+                <div class="template-desc">产品销售合同，适用于企业交易</div>
+            </div>
+            <div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+        </div>
+
+        <div class="text-center mt-2 mb-5">
+            <a href="#" class="text-primary text-sm">查看更多模板 <i class="fas fa-chevron-right text-xs"></i></a>
+        </div>
+
+        <!-- 上传文件后显示 -->
+        <div id="uploaded-document" class="hidden-section">
+            <div class="step-title">
+                <div class="step-number">2</div>
+                <div>确认合同信息</div>
+            </div>
+
+            <div class="doc-preview">
+                <div class="doc-type-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div class="doc-info">
+                    <div class="doc-name">销售服务协议.pdf</div>
+                    <div class="doc-size">2.5MB · 6页</div>
+                </div>
+                <div class="doc-actions">
+                    <div class="action-btn">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="action-btn">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">合同名称</label>
+                <input type="text" class="form-control" placeholder="请输入合同名称" value="销售服务协议">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">合同描述（选填）</label>
+                <textarea class="form-control" rows="3" placeholder="请输入合同的简要描述"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">截止日期（选填）</label>
+                <input type="date" class="form-control">
+            </div>
+
+            <button class="btn btn-block">下一步：添加签署方</button>
+        </div>
+    </div>
+
+    <!-- 底部选项卡 -->
+    <div class="tab-bar">
+        <a href="home.html" class="tab-item">
+            <i class="fas fa-home tab-icon"></i>
+            <span>首页</span>
+        </a>
+        <a href="contract-upload.html" class="tab-item active">
+            <i class="fas fa-plus tab-icon"></i>
+            <span>新建</span>
+        </a>
+        <a href="profile.html" class="tab-item">
+            <i class="fas fa-user tab-icon"></i>
+            <span>我的</span>
+        </a>
+    </div>
+
+    <script>
+        // 在实际应用中，这里会添加文件上传功能的JavaScript代码
+        document.querySelector('.btn').addEventListener('click', function () {
+            // 模拟文件上传完成后显示下一步
+            document.getElementById('uploaded-document').style.display = 'block';
+            document.querySelector('.upload-area').style.display = 'none';
+            document.querySelector('.text-center.text-gray-400.my-4').style.display = 'none';
+            document.querySelector('.mb-4').style.display = 'none';
+            document.querySelectorAll('.template-item').forEach(function (item) {
+                item.style.display = 'none';
+            });
+            document.querySelector('.text-center.mt-2.mb-5').style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>

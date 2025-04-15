@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>签名/印章设置 - 电子合同签署小程序</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .tab-container {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            color: var(--text-secondary);
+            position: relative;
+            font-size: 15px;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .signature-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .signature-preview {
+            height: 120px;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            background-color: #f8f8f8;
+        }
+
+        .signature-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .signature-option {
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .signature-option.active {
+            border-color: var(--primary-color);
+            background-color: #f0f7ff;
+        }
+
+        .signature-option.active::after {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--primary-color);
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .signature-tools {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .tool-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .tool-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 200px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: white;
+            position: relative;
+        }
+
+        #signatureCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        .seal-preview {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .seal-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #e53e3e;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #c53030;
+        }
+
+        .seal-text {
+            position: absolute;
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .seal-company {
+            font-size: 12px;
+            position: absolute;
+            top: 55%;
+            width: 80%;
+            text-align: center;
+        }
+
+        .seal-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .seal-type-options {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .seal-type {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f8f8f8;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .seal-type:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .seal-type:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .seal-type.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- iOS状态栏 -->
+    <div class="ios-status-bar">
+        <div class="status-left">
+            <div class="status-time">9:41</div>
+        </div>
+        <div class="status-icons">
+            <i class="fa-solid fa-signal"></i>
+            <i class="fa-solid fa-wifi"></i>
+            <i class="fa-solid fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-header">
+        <div class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-title">签名/印章设置</div>
+        <div></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <div class="tab-container">
+            <div class="tab active" id="signature-tab">个人签名</div>
+            <div class="tab" id="seal-tab">企业印章</div>
+        </div>
+
+        <!-- 个人签名设置 -->
+        <div class="tab-content active" id="signature-content">
+            <div class="signature-container">
+                <h3 class="font-medium mb-3">选择签名样式</h3>
+
+                <div class="signature-preview">
+                    <div class="text-gray-400">
+                        <i class="fas fa-signature text-lg"></i>
+                        <p class="text-sm mt-2">您的签名将显示在此处</p>
+                    </div>
+                </div>
+
+                <div class="signature-options">
+                    <div class="signature-option active">
+                        <img src="https://via.placeholder.com/70x40/f8f8f8/666666?text=签名1" alt="签名样式1">
+                    </div>
+                    <div class="signature-option">
+                        <img src="https://via.placeholder.com/70x40/f8f8f8/666666?text=签名2" alt="签名样式2">
+                    </div>
+                    <div class="signature-option">
+                        <img src="https://via.placeholder.com/70x40/f8f8f8/666666?text=签名3" alt="签名样式3">
+                    </div>
+                </div>
+
+                <div class="signature-tools">
+                    <div class="tool-btn">
+                        <i class="fas fa-pen tool-icon"></i>
+                        <span>手写签名</span>
+                    </div>
+                    <div class="tool-btn">
+                        <i class="fas fa-font tool-icon"></i>
+                        <span>输入签名</span>
+                    </div>
+                    <div class="tool-btn">
+                        <i class="fas fa-upload tool-icon"></i>
+                        <span>上传签名</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="signature-container">
+                <h3 class="font-medium mb-3">手写签名</h3>
+
+                <div class="canvas-container">
+                    <canvas id="signatureCanvas"></canvas>
+                </div>
+
+                <div class="flex justify-between">
+                    <button class="btn btn-outline">清除</button>
+                    <button class="btn">保存签名</button>
+                </div>
+            </div>
+
+            <div class="signature-container">
+                <h3 class="font-medium mb-3">输入签名</h3>
+
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入您的姓名">
+                </div>
+
+                <div class="form-group">
+                    <select class="form-control">
+                        <option value="">选择字体样式</option>
+                        <option value="style1">签名字体1</option>
+                        <option value="style2">签名字体2</option>
+                        <option value="style3">签名字体3</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-block">生成签名</button>
+            </div>
+        </div>
+
+        <!-- 企业印章设置 -->
+        <div class="tab-content" id="seal-content">
+            <div class="signature-container">
+                <h3 class="font-medium mb-3">企业印章预览</h3>
+
+                <div class="seal-preview">
+                    <div class="seal-image">
+                        <div class="seal-text">企业名称</div>
+                        <div class="seal-company">电子签章</div>
+                    </div>
+                </div>
+
+                <div class="seal-type-options">
+                    <div class="seal-type active">圆形印章</div>
+                    <div class="seal-type">椭圆印章</div>
+                    <div class="seal-type">方形印章</div>
+                </div>
+            </div>
+
+            <div class="seal-form">
+                <div class="form-group">
+                    <label class="form-label">企业名称</label>
+                    <input type="text" class="form-control" placeholder="请输入企业名称">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">印章编号</label>
+                    <input type="text" class="form-control" placeholder="请输入印章编号">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">印章颜色</label>
+                    <div class="flex space-x-3 mt-1">
+                        <div class="w-8 h-8 bg-red-600 rounded-full cursor-pointer border-2 border-gray-300"></div>
+                        <div class="w-8 h-8 bg-blue-600 rounded-full cursor-pointer"></div>
+                        <div class="w-8 h-8 bg-green-600 rounded-full cursor-pointer"></div>
+                        <div class="w-8 h-8 bg-purple-600 rounded-full cursor-pointer"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">上传企业资质</label>
+                    <div class="mt-2 p-3 border border-dashed border-gray-300 rounded-lg text-center">
+                        <i class="fas fa-upload text-gray-400 text-xl mb-2"></i>
+                        <p class="text-sm text-gray-500">点击上传营业执照等资质文件</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-block">生成印章</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换标签页功能
+        document.getElementById('signature-tab').addEventListener('click', function () {
+            document.getElementById('signature-tab').classList.add('active');
+            document.getElementById('seal-tab').classList.remove('active');
+            document.getElementById('signature-content').classList.add('active');
+            document.getElementById('seal-content').classList.remove('active');
+        });
+
+        document.getElementById('seal-tab').addEventListener('click', function () {
+            document.getElementById('seal-tab').classList.add('active');
+            document.getElementById('signature-tab').classList.remove('active');
+            document.getElementById('seal-content').classList.add('active');
+            document.getElementById('signature-content').classList.remove('active');
+        });
+
+        // 选择签名样式
+        const signatureOptions = document.querySelectorAll('.signature-option');
+        signatureOptions.forEach(option => {
+            option.addEventListener('click', function () {
+                signatureOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 选择印章类型
+        const sealTypes = document.querySelectorAll('.seal-type');
+        sealTypes.forEach(type => {
+            type.addEventListener('click', function () {
+                sealTypes.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 手写签名Canvas初始化
+        const canvas = document.getElementById('signatureCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth - 2; // 减去边框宽度
+            canvas.height = container.offsetHeight - 2;
+
+            // 设置线条样式
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.type.includes('touch') ?
+                e.touches[0].clientX - rect.left :
+                e.clientX - rect.left;
+            const y = e.type.includes('touch') ?
+                e.touches[0].clientY - rect.top :
+                e.clientY - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        // 添加事件监听
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // 触摸设备支持
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // 初始化Canvas
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+    </script>
+</body>
+
+</html>
